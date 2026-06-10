@@ -24,17 +24,17 @@ export function IconButton({
 }: Props) {
   const toneCls =
     tone === "primary"
-      ? "bg-[rgba(167,139,250,0.20)] hover:bg-[rgba(167,139,250,0.30)] border-[rgba(167,139,250,0.45)] text-[rgb(var(--accent-strong))]"
+      ? "bg-[rgba(255,58,177,0.18)] hover:bg-[rgba(255,58,177,0.28)] border-[rgba(0,229,255,0.34)] text-white shadow-[0_0_18px_rgba(255,58,177,0.26)]"
       : tone === "ghost"
-        ? "bg-transparent hover:bg-white/5 border-transparent"
-        : "bg-white/5 hover:bg-white/10 border-white/10";
+        ? "bg-transparent hover:bg-[rgba(0,229,255,0.08)] border-transparent"
+        : "bg-black/25 hover:bg-[rgba(0,229,255,0.10)] border-[rgba(0,229,255,0.14)]";
 
   return (
     <button
       type="button"
       className={[
         "inline-flex items-center justify-center rounded-full border backdrop-blur-md transition-colors",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(167,139,250,0.45)] disabled:opacity-40 disabled:cursor-not-allowed",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(255,58,177,0.45)] disabled:opacity-40 disabled:cursor-not-allowed",
         SIZE[size],
         toneCls,
         className ?? "",

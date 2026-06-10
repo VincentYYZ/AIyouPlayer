@@ -6,42 +6,45 @@
 
 :root {
   /* Aurora 渐变基色（深蓝 -> 紫 -> 粉 -> 青） */
-  --aurora-1: 99 102 241;   /* indigo  */
-  --aurora-2: 168 85 247;   /* purple  */
-  --aurora-3: 236 72 153;   /* pink    */
-  --aurora-4: 34 211 238;   /* cyan    */
+  --aurora-1: 255 58 177;
+  --aurora-2: 0 229 255;
+  --aurora-3: 139 92 246;
+  --aurora-4: 255 255 255;
 
   /* 中性色（暗底） */
-  --bg-base: 8 12 24;
-  --bg-elev-1: 14 20 36;
-  --bg-elev-2: 22 28 48;
+  --bg-base: 3 4 10;
+  --bg-elev-1: 7 9 19;
+  --bg-elev-2: 13 17 31;
 
   /* 文字 */
-  --fg-primary: 240 244 255;
-  --fg-secondary: 200 210 230;
-  --fg-muted: 150 160 185;
+  --fg-primary: 248 252 255;
+  --fg-secondary: 180 235 246;
+  --fg-muted: 119 136 164;
 
   /* 玻璃 token */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-strong: rgba(255, 255, 255, 0.10);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-border-strong: rgba(255, 255, 255, 0.20);
-  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.45);
+  --glass-bg: rgba(3, 6, 18, 0.62);
+  --glass-bg-strong: rgba(5, 8, 20, 0.78);
+  --glass-border: rgba(0, 229, 255, 0.16);
+  --glass-border-strong: rgba(255, 58, 177, 0.28);
+  --glass-shadow:
+    0 0 0 1px rgba(255, 58, 177, 0.07),
+    0 22px 80px -24px rgba(0, 0, 0, 0.9),
+    0 0 42px rgba(255, 58, 177, 0.08);
 
   /* 强调色 */
-  --accent: 167 139 250;          /* violet 400 */
-  --accent-strong: 196 181 253;   /* violet 300 */
-  --accent-soft: rgba(167, 139, 250, 0.15);
+  --accent: 255 58 177;
+  --accent-strong: 0 229 255;
+  --accent-soft: rgba(255, 58, 177, 0.16);
 
   /* 状态 */
   --ok: 74 222 128;
   --warn: 251 191 36;
   --err: 248 113 113;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
 
   /* 字体 */
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "PingFang SC",
@@ -81,7 +84,7 @@ body {
 
 body {
   color: rgb(var(--fg-primary));
-  background-color: rgb(var(--bg-base));
+  background-color: #02030a;
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
@@ -97,21 +100,22 @@ body {
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(60vmax 60vmax at 12% 18%, rgba(var(--aurora-1) / 0.45), transparent 60%),
-    radial-gradient(55vmax 55vmax at 88% 22%, rgba(var(--aurora-2) / 0.40), transparent 60%),
-    radial-gradient(50vmax 50vmax at 22% 88%, rgba(var(--aurora-3) / 0.35), transparent 60%),
-    radial-gradient(50vmax 50vmax at 80% 78%, rgba(var(--aurora-4) / 0.30), transparent 60%),
-    linear-gradient(180deg, #06081a 0%, #0a0e22 60%, #060814 100%);
-  filter: saturate(115%);
+    radial-gradient(44vmax 38vmax at 12% 18%, rgba(255, 58, 177, 0.24), transparent 62%),
+    radial-gradient(42vmax 38vmax at 86% 20%, rgba(0, 229, 255, 0.16), transparent 60%),
+    radial-gradient(52vmax 44vmax at 62% 88%, rgba(255, 58, 177, 0.18), transparent 64%),
+    linear-gradient(180deg, #010208 0%, #050612 45%, #02030a 100%);
+  filter: saturate(135%) contrast(112%);
 }
 
 .aurora-bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 3px 3px;
-  mix-blend-mode: overlay;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    radial-gradient(rgba(0, 229, 255, 0.08) 1px, transparent 1px);
+  background-size: 100% 4px, 5px 5px;
+  mix-blend-mode: screen;
   opacity: 0.5;
 }
 
@@ -122,8 +126,8 @@ body {
 .glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
   box-shadow: var(--glass-shadow);
   border-radius: var(--radius-lg);
 }
@@ -131,23 +135,44 @@ body {
 .glass-strong {
   background: var(--glass-bg-strong);
   border: 1px solid var(--glass-border-strong);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
   box-shadow: var(--glass-shadow);
   border-radius: var(--radius-lg);
 }
 
 .glass-input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(0, 229, 255, 0.14);
   border-radius: var(--radius-md);
   transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
 }
 
 .glass-input:focus-within {
-  border-color: rgba(var(--accent), 0.6);
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 0 3px rgba(var(--accent), 0.18);
+  border-color: rgba(255, 58, 177, 0.64);
+  background: rgba(255, 58, 177, 0.07);
+  box-shadow: 0 0 0 3px rgba(255, 58, 177, 0.16), 0 0 24px rgba(0, 229, 255, 0.1);
+}
+
+.cyber-stage {
+  background: #02030a;
+}
+
+.cyber-stage-bg {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 58, 177, 0.24), transparent 26%),
+    radial-gradient(circle at 28% 34%, rgba(0, 229, 255, 0.14), transparent 28%),
+    radial-gradient(circle at 76% 24%, rgba(139, 92, 246, 0.20), transparent 32%),
+    linear-gradient(180deg, rgba(1, 2, 8, 0.88), rgba(2, 3, 10, 0.96));
+}
+
+.cyber-scanlines {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.055) 1px, transparent 1px);
+  background-size: 100% 5px, 64px 100%;
+  mix-blend-mode: screen;
+  opacity: 0.36;
 }
 
 /* =========================================================

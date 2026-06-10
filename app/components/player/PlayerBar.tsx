@@ -83,19 +83,19 @@ export function PlayerBar() {
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-3 md:px-6 md:pb-5">
       <div className="pointer-events-auto mx-auto w-full max-w-[1480px]">
-        <div className="glass-strong relative overflow-visible px-3 py-3 md:px-4">
+        <div className="glass-strong relative overflow-visible border-[rgba(0,229,255,0.22)] bg-[linear-gradient(135deg,rgba(5,8,20,0.86),rgba(12,3,18,0.82))] px-3 py-3 shadow-[0_0_42px_rgba(255,58,177,0.16),0_22px_90px_-22px_rgba(0,0,0,0.94)] md:px-4">
           {libraryOpen ? (
             <div className="absolute bottom-full left-0 right-0 z-50 mb-3 md:left-4 md:right-auto md:w-[28rem]">
-              <div className="overflow-hidden rounded-[26px] border border-white/10 bg-[rgba(8,12,26,0.92)] shadow-[0_24px_80px_-24px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+              <div className="overflow-hidden border border-[rgba(0,229,255,0.18)] bg-[rgba(2,4,12,0.94)] shadow-[0_24px_80px_-24px_rgba(0,229,255,0.28)] backdrop-blur-xl">
                 <div className="flex items-center gap-2 border-b border-white/5 px-4 py-3">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-[rgb(var(--accent-strong))] shadow-[0_0_12px_rgba(196,181,253,0.8)]" />
+                  <span className="inline-flex h-2 w-2 rounded-full bg-[#00e5ff] shadow-[0_0_12px_rgba(0,229,255,0.9)]" />
                   <div className="text-[13px] font-semibold text-white">本地曲目</div>
                   <div className="ml-auto text-[11.5px] text-[rgb(var(--fg-muted))]">
                     {libraryLoading ? "搜索中…" : `${libraryTracks.length} 首结果`}
                   </div>
                 </div>
                 <div className="border-b border-white/5 px-3 py-3">
-                  <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
+                  <div className="flex items-center gap-2 border border-[rgba(255,58,177,0.22)] bg-black/35 px-3 py-2.5">
                     <SearchIcon />
                     <input
                       autoFocus
@@ -113,7 +113,7 @@ export function PlayerBar() {
                     <button
                       type="button"
                       onClick={submitLibrarySearch}
-                      className="inline-flex h-8 items-center rounded-full bg-white/10 px-3 text-[12px] font-medium text-white transition hover:bg-white/15"
+                      className="inline-flex h-8 items-center border border-[rgba(0,229,255,0.24)] bg-[rgba(0,229,255,0.10)] px-3 text-[12px] font-bold uppercase tracking-[0.08em] text-white transition hover:bg-[rgba(0,229,255,0.18)]"
                     >
                       搜索
                     </button>
@@ -136,15 +136,15 @@ export function PlayerBar() {
                           <li
                             key={track.id}
                             className={[
-                              "group flex items-center gap-3 rounded-2xl px-3 py-2 transition",
+                              "group flex items-center gap-3 px-3 py-2 transition",
                               active
-                                ? "bg-gradient-to-r from-[rgba(167,139,250,0.18)] to-transparent"
-                                : "hover:bg-white/[0.04]",
+                                ? "bg-gradient-to-r from-[rgba(255,58,177,0.22)] to-transparent"
+                                : "hover:bg-[rgba(0,229,255,0.06)]",
                             ].join(" ")}
                           >
                             <button
                               type="button"
-                              className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                              className="relative inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden border border-[rgba(0,229,255,0.18)] bg-black/35 text-white hover:bg-[rgba(0,229,255,0.12)]"
                               onClick={() => {
                                 playTrack(track);
                                 setLibraryOpen(false);
@@ -211,10 +211,10 @@ export function PlayerBar() {
                   type="button"
                   onClick={openLibrary}
                   className={[
-                    "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-[12.5px] font-medium transition",
+                    "inline-flex h-10 items-center gap-2 border px-4 text-[12px] font-black uppercase tracking-[0.1em] transition",
                     libraryOpen
-                      ? "border-[rgba(167,139,250,0.45)] bg-[rgba(167,139,250,0.16)] text-white"
-                      : "border-white/10 bg-white/[0.05] text-[rgb(var(--fg-secondary))] hover:text-white",
+                      ? "border-[rgba(255,58,177,0.56)] bg-[rgba(255,58,177,0.18)] text-white shadow-[0_0_22px_rgba(255,58,177,0.18)]"
+                      : "border-[rgba(0,229,255,0.18)] bg-black/25 text-[rgb(var(--fg-secondary))] hover:border-[rgba(255,58,177,0.38)] hover:text-white",
                   ].join(" ")}
                 >
                   <LibraryIcon />
@@ -224,7 +224,7 @@ export function PlayerBar() {
 
               <div
                 data-agent-trigger
-                className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-white/10 bg-black/10 px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+                className="flex min-w-0 flex-1 items-center gap-2 border border-[rgba(0,229,255,0.16)] bg-black/35 px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_0_24px_rgba(0,229,255,0.08)]"
               >
                 <SearchIcon />
                 <input
@@ -245,7 +245,7 @@ export function PlayerBar() {
                   <button
                     type="button"
                     onClick={cancel}
-                    className="inline-flex h-8 items-center rounded-full bg-white/10 px-3 text-[12px] font-medium text-white transition hover:bg-white/15"
+                    className="inline-flex h-8 items-center border border-[rgba(255,58,177,0.32)] bg-[rgba(255,58,177,0.12)] px-3 text-[12px] font-bold uppercase text-white transition hover:bg-[rgba(255,58,177,0.2)]"
                   >
                     停止
                   </button>
@@ -253,7 +253,7 @@ export function PlayerBar() {
                   <button
                     type="button"
                     onClick={submitAgent}
-                    className="inline-flex h-8 items-center rounded-full bg-gradient-to-r from-[rgba(99,102,241,0.92)] to-[rgba(236,72,153,0.82)] px-3.5 text-[12px] font-semibold text-white shadow-[0_8px_22px_-10px_rgba(167,139,250,0.75)] transition hover:brightness-110"
+                    className="inline-flex h-8 items-center bg-gradient-to-r from-[#ff3ab1] to-[#00e5ff] px-3.5 text-[12px] font-black uppercase tracking-[0.08em] text-white shadow-[0_0_20px_rgba(255,58,177,0.32)] transition hover:brightness-125"
                   >
                     发送
                   </button>
@@ -261,7 +261,7 @@ export function PlayerBar() {
               </div>
             </div>
 
-            <div className="grid gap-3 rounded-2xl border border-white/10 bg-black/10 px-4 py-3 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-3 xl:min-w-0 xl:flex-1 xl:rounded-full xl:px-4 xl:py-2.5">
+            <div className="grid gap-3 border border-[rgba(255,58,177,0.18)] bg-black/30 px-4 py-3 shadow-[inset_0_0_22px_rgba(255,58,177,0.05)] md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center md:gap-3 xl:min-w-0 xl:flex-1 xl:px-4 xl:py-2.5">
 
             {/* 控制 */}
             <div className="flex shrink-0 items-center justify-center gap-2 md:justify-start">
@@ -327,7 +327,7 @@ export function PlayerBar() {
         .aurora-range {
           appearance: none;
           height: 4px;
-          background: linear-gradient(90deg, rgba(167,139,250,0.6), rgba(236,72,153,0.55));
+          background: linear-gradient(90deg, rgba(0,229,255,0.68), rgba(255,58,177,0.72));
           border-radius: 4px;
           outline: none;
           opacity: 0.85;
@@ -337,7 +337,7 @@ export function PlayerBar() {
           width: 12px; height: 12px;
           border-radius: 50%;
           background: white;
-          box-shadow: 0 2px 8px rgba(167,139,250,0.6);
+          box-shadow: 0 0 14px rgba(255,58,177,0.82);
           cursor: pointer;
         }
         .aurora-range::-moz-range-thumb {
@@ -345,7 +345,7 @@ export function PlayerBar() {
           border-radius: 50%;
           background: white;
           border: 0;
-          box-shadow: 0 2px 8px rgba(167,139,250,0.6);
+          box-shadow: 0 0 14px rgba(255,58,177,0.82);
           cursor: pointer;
         }
       `}</style>
@@ -357,7 +357,7 @@ function Disc({ spinning, cover }: { spinning: boolean; cover?: string }) {
   return (
     <div
       className={[
-        "relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-[rgba(99,102,241,0.6)] via-[rgba(168,85,247,0.6)] to-[rgba(236,72,153,0.55)] shadow-[0_8px_24px_-12px_rgba(167,139,250,0.7)]",
+        "relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-[#00e5ff] via-[#160616] to-[#ff3ab1] shadow-[0_0_26px_rgba(255,58,177,0.42)]",
         spinning ? "disc-spin" : "",
       ].join(" ")}
       aria-hidden
@@ -369,7 +369,7 @@ function Disc({ spinning, cover }: { spinning: boolean; cover?: string }) {
         />
       ) : null}
       <span className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_36%,rgba(10,14,34,0.18)_68%,rgba(10,14,34,0.65)_100%)]" />
-      <span className="absolute inset-[36%] rounded-full bg-[#0a0e22]" />
+      <span className="absolute inset-[36%] rounded-full bg-[#02030a] shadow-[0_0_12px_rgba(0,229,255,0.45)]" />
       <style>{`
         @keyframes disc-rotate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
         .disc-spin { animation: disc-rotate 6s linear infinite; }
@@ -400,15 +400,15 @@ function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(progress * 100)}
-      className="relative h-1.5 min-w-0 flex-1 cursor-pointer rounded-full bg-white/10"
+      className="relative h-1.5 min-w-0 flex-1 cursor-pointer rounded-full bg-[rgba(0,229,255,0.12)]"
       onClick={(e) => handle(e.clientX)}
     >
       <div
-        className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-[rgba(99,102,241,0.9)] via-[rgba(168,85,247,0.9)] to-[rgba(236,72,153,0.85)]"
+        className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-[#00e5ff] via-white to-[#ff3ab1] shadow-[0_0_18px_rgba(255,58,177,0.45)]"
         style={{ width: `${progress * 100}%` }}
       />
       <div
-        className="absolute -top-1 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-white shadow"
+        className="absolute -top-1 h-3.5 w-3.5 -translate-x-1/2 rounded-full bg-white shadow-[0_0_16px_rgba(0,229,255,0.9)]"
         style={{ left: `${progress * 100}%` }}
       />
     </div>
@@ -444,7 +444,7 @@ function VolumeControl({
         {muted || volume === 0 ? <MuteIcon /> : <VolumeIcon />}
       </IconButton>
       <div className="pointer-events-none absolute bottom-full right-0 mb-2 translate-y-1 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
-        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[rgba(8,12,26,0.92)] px-3 py-2 shadow-[0_12px_32px_-16px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+        <div className="flex items-center gap-2 border border-[rgba(0,229,255,0.18)] bg-[rgba(2,4,12,0.94)] px-3 py-2 shadow-[0_12px_32px_-16px_rgba(0,229,255,0.35)] backdrop-blur-xl">
           <input
             type="range"
             min={0}
