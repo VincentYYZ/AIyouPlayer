@@ -30,7 +30,7 @@ type SpawnPoint = {
   weight: number;
 };
 
-type RendererConfig = {
+export type ParticleFxConfig = {
   dispersion: number;
   particleSize: number;
   contrast: number;
@@ -43,10 +43,13 @@ type RendererConfig = {
   depthWave: number;
   colorShiftSpeed: number;
   danceStrength: number;
+  escapeSpeed: number;
+  escapeMotion: number;
+  opacityBoost: number;
   escapeCount: number;
 };
 
-const CYBER_CONFIG: RendererConfig = {
+export const DEFAULT_PARTICLE_FX_CONFIG: ParticleFxConfig = {
   dispersion: 0.86,
   particleSize: 1.35,
   contrast: 1.34,
@@ -59,13 +62,16 @@ const CYBER_CONFIG: RendererConfig = {
   depthWave: 0.24,
   colorShiftSpeed: 0.42,
   danceStrength: 1.85,
+  escapeSpeed: 0.34,
+  escapeMotion: 1.0,
+  opacityBoost: 1.0,
   escapeCount: 30000,
 };
 
 const INACTIVE = new THREE.Vector3(-9999, -9999, -9999);
 
 export class CyberParticleCloudRenderer {
-  private readonly config: RendererConfig;
+  private readonly config: ParticleFxConfig;
   private host: HTMLDivElement | null = null;
   private scene: THREE.Scene | null = null;
   private camera: THREE.PerspectiveCamera | null = null;
@@ -93,8 +99,8 @@ export class CyberParticleCloudRenderer {
   private sphereAlpha = 0;
   private resizeObserver: ResizeObserver | null = null;
 
-  constructor(config: Partial<RendererConfig> = {}) {
-    this.config = { ...CYBER_CONFIG, ...config };
+  constructor(config: Partial<ParticleFxConfig> = {}) {
+    this.config = { ...DEFAULT_PARTICLE_FX_CONFIG, ...config };
   }
 
   mount(host: HTMLDivElement) {
@@ -177,6 +183,15 @@ export class CyberParticleCloudRenderer {
     const dance = playing ? this.config.danceStrength : 0;
     if (this.particleMaterial) this.particleMaterial.uniforms.uDanceStrength.value = dance;
     if (this.haloMaterial) this.haloMaterial.uniforms.uDanceStrength.value = dance * 0.62;
+  }
+
+  updateConfig(config: Partial<ParticleFxConfig>) {
+    Object.assign(this.config, config);
+    this.syncConfigUniforms();
+    this.setPlaying(this.playing);
+    if (this.sphere) {
+      this.sphere.scale.setScalar(this.config.sphereRadius);
+    }
   }
 
   async setImageSource(source: string | SourceImage) {
@@ -300,7 +315,30 @@ export class CyberParticleCloudRenderer {
       uDepthWave: { value: this.config.depthWave },
       uDanceStrength: { value: this.playing ? this.config.danceStrength : 0 },
       uColorShiftSpeed: { value: this.config.colorShiftSpeed },
+      uEscapeSpeed: { value: this.config.escapeSpeed },
+      uEscapeMotion: { value: this.config.escapeMotion },
+      uOpacityBoost: { value: this.config.opacityBoost },
     };
+  }
+
+  private syncConfigUniforms() {
+    for (const material of [this.particleMaterial, this.occlusionMaterial, this.haloMaterial]) {
+      if (!material) continue;
+      material.uniforms.uSphereRadius.value = this.config.sphereRadius;
+      material.uniforms.uSphereStrength.value = this.config.sphereStrength;
+      material.uniforms.uSphereMass.value = this.config.sphereMass;
+      material.uniforms.uDispersion.value = this.config.dispersion;
+      material.uniforms.uParticleSize.value = this.config.particleSize;
+      material.uniforms.uContrast.value = this.config.contrast;
+      material.uniforms.uDepthStrength.value = this.config.depthStrength;
+      material.uniforms.uFlowSpeed.value = this.config.flowSpeed;
+      material.uniforms.uFlowAmplitude.value = this.config.flowAmplitude;
+      material.uniforms.uDepthWave.value = this.config.depthWave;
+      material.uniforms.uColorShiftSpeed.value = this.config.colorShiftSpeed;
+      material.uniforms.uEscapeSpeed.value = this.config.escapeSpeed;
+      material.uniforms.uEscapeMotion.value = this.config.escapeMotion;
+      material.uniforms.uOpacityBoost.value = this.config.opacityBoost;
+    }
   }
 
   private updateUniforms(elapsed: number) {

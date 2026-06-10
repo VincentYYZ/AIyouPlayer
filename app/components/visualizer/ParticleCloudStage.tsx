@@ -16,15 +16,46 @@ import { useMode } from "@/app/context/ModeContext";
 import { usePlayer } from "@/app/context/PlayerContext";
 import {
   CyberParticleCloudRenderer,
+  DEFAULT_PARTICLE_FX_CONFIG,
   createCyberFallbackCanvas,
+  type ParticleFxConfig,
 } from "./particleCloudRenderer";
+
+type FxKey = keyof Omit<ParticleFxConfig, "escapeCount">;
+
+const FX_CONTROLS: Array<{
+  key: FxKey;
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+}> = [
+  { key: "dispersion", label: "Dispersion", min: 0, max: 5, step: 0.01 },
+  { key: "particleSize", label: "Particle Size", min: 0.1, max: 10, step: 0.01 },
+  { key: "contrast", label: "Contrast", min: 0, max: 3, step: 0.01 },
+  { key: "flowSpeed", label: "Flow Speed", min: 0, max: 5, step: 0.01 },
+  { key: "flowAmplitude", label: "Flow Range", min: 0, max: 5, step: 0.01 },
+  { key: "escapeSpeed", label: "Escape Speed", min: 0.05, max: 1.4, step: 0.01 },
+  { key: "escapeMotion", label: "Escape Motion", min: 0.2, max: 2, step: 0.01 },
+  { key: "opacityBoost", label: "Glow Opacity", min: 0.4, max: 2.4, step: 0.01 },
+  { key: "depthStrength", label: "Depth Strength", min: 0, max: 24, step: 0.05 },
+  { key: "sphereRadius", label: "Sphere Radius", min: 3, max: 18, step: 0.05 },
+  { key: "sphereStrength", label: "Gravity Strength", min: 0, max: 2.6, step: 0.01 },
+  { key: "sphereMass", label: "Gravity Mass", min: 0.1, max: 2, step: 0.01 },
+  { key: "colorShiftSpeed", label: "Hue Flow", min: 0, max: 2, step: 0.01 },
+  { key: "danceStrength", label: "Audio Dance", min: 0, max: 5, step: 0.01 },
+  { key: "depthWave", label: "Depth Wave", min: 0, max: 5, step: 0.01 },
+];
 
 export function ParticleCloudStage() {
   const { current, playing } = usePlayer();
   const [sourceName, setSourceName] = useState("Kuro Neon Core");
   const [particleError, setParticleError] = useState<string | null>(null);
+  const [fxOpen, setFxOpen] = useState(false);
+  const [fxConfig, setFxConfig] = useState<ParticleFxConfig>(DEFAULT_PARTICLE_FX_CONFIG);
   const hostRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<CyberParticleCloudRenderer | null>(null);
+  const fxConfigRef = useRef<ParticleFxConfig>(DEFAULT_PARTICLE_FX_CONFIG);
   const manualOverrideRef = useRef(false);
 
   useEffect(() => {
@@ -32,7 +63,7 @@ export function ParticleCloudStage() {
     if (!host) return;
 
     try {
-      const renderer = new CyberParticleCloudRenderer();
+      const renderer = new CyberParticleCloudRenderer(fxConfigRef.current);
       renderer.mount(host);
       rendererRef.current = renderer;
       void renderer.setImageSource(createCyberFallbackCanvas("AIyou"));
@@ -104,6 +135,22 @@ export function ParticleCloudStage() {
     event.target.value = "";
   }, []);
 
+  const updateFx = useCallback((key: FxKey, value: number) => {
+    setFxConfig((prev) => {
+      const next = { ...prev, [key]: value };
+      fxConfigRef.current = next;
+      rendererRef.current?.updateConfig({ [key]: value });
+      return next;
+    });
+  }, []);
+
+  const resetFx = useCallback(() => {
+    const next = { ...DEFAULT_PARTICLE_FX_CONFIG };
+    fxConfigRef.current = next;
+    setFxConfig(next);
+    rendererRef.current?.updateConfig(next);
+  }, []);
+
   const statusText = useMemo(() => {
     if (particleError) return particleError;
     if (current?.cover) return playing ? "cover signal overdrive" : "cover signal locked";
@@ -137,7 +184,29 @@ export function ParticleCloudStage() {
           Import Art
           <input type="file" accept="image/*" className="hidden" onChange={handleFile} />
         </label>
+        <button
+          type="button"
+          onClick={() => setFxOpen((open) => !open)}
+          className={[
+            "inline-flex h-11 items-center justify-center gap-2 border px-4 text-[12px] font-black uppercase tracking-[0.12em] text-white shadow-[0_0_28px_rgba(0,229,255,0.16)] backdrop-blur transition",
+            fxOpen
+              ? "border-[rgba(0,229,255,0.62)] bg-[rgba(0,229,255,0.16)]"
+              : "border-[rgba(0,229,255,0.28)] bg-black/35 hover:border-[rgba(255,58,177,0.54)] hover:bg-[rgba(255,58,177,0.12)]",
+          ].join(" ")}
+        >
+          <TuneIcon />
+          FX Controls
+        </button>
       </div>
+
+      {fxOpen ? (
+        <ParticleFxPanel
+          config={fxConfig}
+          onChange={updateFx}
+          onReset={resetFx}
+          onClose={() => setFxOpen(false)}
+        />
+      ) : null}
 
       <div ref={hostRef} className="absolute inset-0 z-0 h-full w-full" />
       <FloorLights playing={playing} />
@@ -222,6 +291,103 @@ function StageAgentPanel() {
   );
 }
 
+function ParticleFxPanel({
+  config,
+  onChange,
+  onReset,
+  onClose,
+}: {
+  config: ParticleFxConfig;
+  onChange: (key: FxKey, value: number) => void;
+  onReset: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <aside className="absolute right-3 top-[8.2rem] z-40 w-[min(24rem,calc(100vw-1.5rem))] border border-[rgba(0,229,255,0.28)] bg-[rgba(2,4,12,0.86)] shadow-[0_0_46px_rgba(0,229,255,0.16),0_26px_90px_rgba(0,0,0,0.55)] backdrop-blur-xl md:right-6 md:top-[6.1rem]">
+      <header className="flex items-center gap-3 border-b border-[rgba(255,255,255,0.08)] px-4 py-3">
+        <span className="h-2 w-2 rounded-full bg-[#00e5ff] shadow-[0_0_14px_rgba(0,229,255,0.95)]" />
+        <div className="min-w-0 flex-1">
+          <div className="text-[12px] font-black uppercase tracking-[0.18em] text-white">
+            Particle FX Console
+          </div>
+          <div className="mt-1 text-[10px] uppercase tracking-[0.18em] text-[rgb(var(--fg-muted))]">
+            ParticleCloud live uniforms
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onReset}
+          className="border border-[rgba(255,58,177,0.3)] bg-[rgba(255,58,177,0.10)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white hover:bg-[rgba(255,58,177,0.18)]"
+        >
+          Reset
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close FX Controls"
+          className="inline-flex h-7 w-7 items-center justify-center border border-[rgba(0,229,255,0.18)] bg-black/40 text-white hover:bg-[rgba(0,229,255,0.12)]"
+        >
+          x
+        </button>
+      </header>
+
+      <div className="thin-scroll max-h-[min(62vh,34rem)] overflow-y-auto px-4 py-3">
+        <div className="grid gap-3">
+          {FX_CONTROLS.map((control) => (
+            <FxSlider
+              key={control.key}
+              control={control}
+              value={config[control.key]}
+              onChange={(value) => onChange(control.key, value)}
+            />
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function FxSlider({
+  control,
+  value,
+  onChange,
+}: {
+  control: (typeof FX_CONTROLS)[number];
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const pct = ((value - control.min) / (control.max - control.min)) * 100;
+  return (
+    <label className="grid gap-2 border border-[rgba(255,255,255,0.07)] bg-black/28 px-3 py-2.5">
+      <span className="flex items-center justify-between gap-3">
+        <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[rgb(var(--fg-secondary))]">
+          {control.label}
+        </span>
+        <span className="font-mono text-[11px] text-white">
+          {value.toFixed(control.step < 0.05 ? 2 : 1)}
+        </span>
+      </span>
+      <span className="relative h-8">
+        <span className="pointer-events-none absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 bg-[rgba(0,229,255,0.12)]" />
+        <span
+          className="pointer-events-none absolute left-0 top-1/2 h-1 -translate-y-1/2 bg-gradient-to-r from-[#00e5ff] to-[#ff3ab1] shadow-[0_0_14px_rgba(255,58,177,0.45)]"
+          style={{ width: `${pct}%` }}
+        />
+        <input
+          type="range"
+          min={control.min}
+          max={control.max}
+          step={control.step}
+          value={value}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className="relative z-10 h-8 w-full cursor-pointer opacity-0"
+          aria-label={control.label}
+        />
+      </span>
+    </label>
+  );
+}
+
 function StageThinking() {
   return (
     <div className="mb-3 flex justify-start">
@@ -301,6 +467,19 @@ function UploadIcon() {
       <path d="M12 16V4" />
       <path d="M7 9l5-5 5 5" />
       <path d="M20 16.5V19a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2.5" />
+    </svg>
+  );
+}
+
+function TuneIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M4 7h10" />
+      <path d="M18 7h2" />
+      <path d="M16 5v4" />
+      <path d="M4 17h2" />
+      <path d="M10 17h10" />
+      <path d="M8 15v4" />
     </svg>
   );
 }

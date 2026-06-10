@@ -12,6 +12,8 @@ export const particleVertexShader = `
   uniform float uFlowAmplitude;
   uniform float uDepthWave;
   uniform float uDanceStrength;
+  uniform float uEscapeSpeed;
+  uniform float uEscapeMotion;
 
   attribute vec3 color;
   attribute float size;
@@ -133,6 +135,7 @@ export const particleFragmentShader = `
   uniform float uContrast;
   uniform float uTime;
   uniform float uColorShiftSpeed;
+  uniform float uOpacityBoost;
 
   varying vec3 vColor;
   varying float vAlpha;
@@ -164,7 +167,7 @@ export const particleFragmentShader = `
     hsv.z = clamp(hsv.z * (1.08 + vScatter * 0.34), 0.0, 1.0);
     color = hsv2rgb(hsv);
 
-    float alpha = exp(-dist * dist * 6.4) * vAlpha * mix(0.9, 1.24, vScatter);
+    float alpha = exp(-dist * dist * 6.4) * vAlpha * mix(0.9, 1.24, vScatter) * uOpacityBoost;
     float core = pow(max(1.0 - dist * 1.82, 0.0), 2.3);
     color += core * mix(vec3(0.08, 0.22, 0.34), vec3(0.44, 0.08, 0.30), vScatter);
     gl_FragColor = vec4(color, alpha);
@@ -183,17 +186,17 @@ export const haloVertexShader = particleVertexShader
   .replace("attribute float size;", "attribute float size;\n  attribute vec3 aBirth;\n  attribute vec3 aVel;\n  attribute float aPhase;\n  attribute float aMaxL;\n  attribute float aSeed;")
   .replace("vec3 pos = position;", `
     float life = max(aMaxL, 0.001);
-    float age = mod(uTime * 0.34 + aPhase * life, life);
+    float age = mod(uTime * uEscapeSpeed + aPhase * life, life);
     float progress = age / life;
     float eased = progress * progress * (3.0 - 2.0 * progress);
     vec2 radial2 = normalize(aBirth.xy + vec2(0.001));
     vec2 orbit2 = vec2(-radial2.y, radial2.x);
     float stream = snoise(vec3(aBirth.x * 0.02, aBirth.y * 0.006, uTime * 0.18 + aSeed));
-    vec3 pos = aBirth + aVel * age * (0.18 + uFlowAmplitude * 0.16);
-    pos.y += eased * eased * (8.0 + scatter * 9.0);
-    pos.xy += radial2 * eased * (1.2 + scatter * 8.0);
-    pos.xy += orbit2 * sin(progress * 5.5 + aSeed) * eased * (1.2 + scatter * 3.2);
-    pos.x += stream * eased * (4.4 + scatter * 7.4);
+    vec3 pos = aBirth + aVel * age * (0.18 + uFlowAmplitude * 0.16) * uEscapeMotion;
+    pos.y += eased * eased * (8.0 + scatter * 9.0) * uEscapeMotion;
+    pos.xy += radial2 * eased * (1.2 + scatter * 8.0) * uEscapeMotion;
+    pos.xy += orbit2 * sin(progress * 5.5 + aSeed) * eased * (1.2 + scatter * 3.2) * uEscapeMotion;
+    pos.x += stream * eased * (4.4 + scatter * 7.4) * uEscapeMotion;
   `)
   .replace("gl_PointSize = clamp(uParticleSize * size * sizeBoost * (300.0 / -mvPosition.z), 0.45, 3.8);", "gl_PointSize = clamp(uParticleSize * size * sizeBoost * (300.0 / -mvPosition.z), 0.3, 5.4);");
 

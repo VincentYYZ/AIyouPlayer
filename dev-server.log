@@ -10,3 +10,15 @@
 Creating turbopack project { dir: 'D:\\App-project\\AIyouPlayer', testMode: true }
 
  GET / 200 in 609ms (next.js: 276ms, application-code: 333ms)
+ GET / 200 in 81ms (next.js: 7ms, application-code: 73ms)
+ GET / 200 in 57ms (next.js: 5ms, application-code: 52ms)
+✓ Compiled in 46ms
+ GET / 200 in 136ms (next.js: 78ms, application-code: 58ms)
+ GET / 200 in 19ms (next.js: 3ms, application-code: 16ms)
+✓ Compiled in 35ms
+ GET / 200 in 143ms (next.js: 89ms, application-code: 54ms)
+ GET / 200 in 24ms (next.js: 4ms, application-code: 20ms)
+✓ Compiled in 90ms
+ GET / 200 in 170ms (next.js: 102ms, application-code: 68ms)
+ GET / 200 in 27ms (next.js: 4ms, application-code: 22ms)
+ GET / 200 in 269ms (next.js: 5ms, application-code: 264ms)
